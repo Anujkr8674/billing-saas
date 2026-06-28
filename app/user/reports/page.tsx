@@ -179,7 +179,7 @@ export default function ReportsPage() {
                   outerRadius={75}
                   dataKey="value"
                   labelLine={true}
-                  label={({ cx, cy, midAngle, innerRadius, outerRadius, value, name, percent }) => {
+                  label={({ cx, cy, midAngle, innerRadius, outerRadius, value, name, percent }: any) => {
                     const RADIAN = Math.PI / 180;
                     const radius = outerRadius * 1.4;
                     const x = cx + radius * Math.cos(-midAngle * RADIAN);

@@ -1,0 +1,296 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// Role enum removed
+
+model User {
+  id            String    @id @default(uuid())
+  name          String
+  email         String    @unique
+  mobile        String
+  passwordHash  String
+  isVerified    Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  profile       UserProfile?
+  subscription  UserSubscription?
+  payments      Payment[]
+  activityLogs  ActivityLog[]
+  otps          OTPVerification[]
+
+  surveys          Survey[]
+  quotations       Quotation[]
+  invoices         Invoice[]
+  loadingSlips     LoadingSlip[]
+  lorryReceipts    LorryReceipt[]
+  packingLists     PackingList[]
+  paymentVouchers  PaymentVoucher[]
+  moneyReceipts    MoneyReceipt[]
+  vehicleConditions VehicleCondition[]
+  nocForms         NOCForm[]
+}
+
+model UserProfile {
+  id                 String   @id @default(uuid())
+  userId             String   @unique
+  companyName        String?
+  companyCode        String?
+  ownerName          String?
+  companyLogo        String?
+  gstNumber          String?
+  panCardNumber      String?
+  address            String?
+  
+  addressLine1       String?
+  addressLine2       String?
+  city               String?
+  state              String?
+  pincode            String?
+  country            String?
+  
+  mobileNumber       String?
+  email              String?
+  website            String?
+  bankDetails        String?
+  authorizedSignature String?
+  companyStamp       String?
+  termsConditions    String?
+  sidebarTheme       String?  @default("green")
+  recentColors       String?  @default("[]")
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model OTPVerification {
+  id        String   @id @default(uuid())
+  userId    String
+  otp       String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model SubscriptionPlan {
+  id          String   @id @default(uuid())
+  name        String   // "Free Plan", "7-Day Trial", "3 Month Plan", "6 Month Plan", "1 Year Plan"
+  price       Float
+  durationDays Int
+  hasWatermark Boolean @default(true)
+  dailyLimit   Int?    // e.g., 3 for free plan, null for unlimited
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  subscriptions UserSubscription[]
+}
+
+model UserSubscription {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  planId    String
+  startDate DateTime @default(now())
+  endDate   DateTime
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan SubscriptionPlan @relation(fields: [planId], references: [id])
+}
+
+model Payment {
+  id            String   @id @default(uuid())
+  userId        String
+  razorpayOrderId String?
+  razorpayPaymentId String?
+  amount        Float
+  status        String   // PENDING, SUCCESS, FAILED
+  planName      String
+  createdAt     DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// -----------------------------------------------------------------------------
+// Document Models
+// -----------------------------------------------------------------------------
+
+model Survey {
+  id          String   @id @default(uuid())
+  userId      String
+  docNumber   String   @unique // PREFIX-YYYYMMDD-SERIAL
+  date        DateTime @default(now())
+  clientName  String
+  details     Json?    // Use JSON for flexibility of line items / details
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Quotation {
+  id          String   @id @default(uuid())
+  userId      String
+  docNumber   String   @unique
+  date        DateTime @default(now())
+  clientName  String
+  totalAmount Float    @default(0)
+  details     Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Invoice {
+  id          String   @id @default(uuid())
+  userId      String
+  docNumber   String   @unique
+  date        DateTime @default(now())
+  clientName  String
+  totalAmount Float    @default(0)
+  details     Json?
+  status      String   @default("DRAFT") // DRAFT, PAID, UNPAID
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model LoadingSlip {
+  id          String   @id @default(uuid())
+  userId      String
+  docNumber   String   @unique
+  date        DateTime @default(now())
+  vehicleNo   String?
+  driverName  String?
+  details     Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model LorryReceipt {
+  id          String   @id @default(uuid())
+  userId      String
+  docNumber   String   @unique
+  date        DateTime @default(now())
+  consignor   String?
+  consignee   String?
+  details     Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model PackingList {
+  id          String   @id @default(uuid())
+  userId      String
+  docNumber   String   @unique
+  date        DateTime @default(now())
+  referenceNo String?
+  details     Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model PaymentVoucher {
+  id          String   @id @default(uuid())
+  userId      String
+  docNumber   String   @unique
+  date        DateTime @default(now())
+  paidTo      String?
+  amount      Float    @default(0)
+  details     Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model MoneyReceipt {
+  id          String   @id @default(uuid())
+  userId      String
+  docNumber   String   @unique
+  date        DateTime @default(now())
+  receivedFrom String?
+  amount      Float    @default(0)
+  details     Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VehicleCondition {
+  id          String   @id @default(uuid())
+  userId      String
+  docNumber   String   @unique
+  date        DateTime @default(now())
+  vehicleNo   String?
+  details     Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model NOCForm {
+  id          String   @id @default(uuid())
+  userId      String
+  docNumber   String   @unique
+  date        DateTime @default(now())
+  clientName  String?
+  details     Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model ActivityLog {
+  id        String   @id @default(uuid())
+  userId    String
+  action    String
+  details   String?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Admin {
+  id            String    @id @default(uuid())
+  name          String
+  email         String    @unique
+  mobile        String
+  passwordHash  String
+  sidebarTheme  String?   @default("purple")
+  recentColors  String?   @default("[]")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+model ContactMessage {
+  id        String   @id @default(uuid())
+  firstName String
+  lastName  String
+  email     String
+  contactNo String?
+  subject   String?
+  message   String
+  status    String   @default("UNREAD")
+  createdAt DateTime @default(now())
+}

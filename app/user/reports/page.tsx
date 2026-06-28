@@ -116,7 +116,7 @@ export default function ReportsPage() {
                 <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#6b7280' }} tickFormatter={(val) => `₹${val/1000}k`} />
                 <RechartsTooltip 
                   contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
-                  formatter={(value: number) => formatCurrency(value)}
+                  formatter={(value: any) => formatCurrency(Number(value) || 0)}
                 />
                 <Legend iconType="circle" wrapperStyle={{ paddingTop: '20px' }} />
                 <Area type="monotone" dataKey="invoiced" name="Invoiced" stroke="#3b82f6" strokeWidth={3} fillOpacity={1} fill="url(#colorInvoiced)" />

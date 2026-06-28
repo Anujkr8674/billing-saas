@@ -5,7 +5,7 @@ const protectedRoutes = ['/user'];
 const adminRoutes = ['/admin/dashboard'];
 const publicRoutes = ['/login', '/signup', '/admin', '/'];
 
-export default async function middleware(req: NextRequest) {
+export default async function proxy(req: NextRequest) {
   const path = req.nextUrl.pathname;
   const isProtectedRoute = protectedRoutes.some(route => path.startsWith(route));
   const isAdminRoute = adminRoutes.some(route => path.startsWith(route));

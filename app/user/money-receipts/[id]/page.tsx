@@ -67,7 +67,7 @@ export default function EditMoneyReceiptPage({ params }: { params: Promise<{ id:
       try {
         const item = await getMoneyReceiptById(id);
         if (item) {
-          const d = item.details || {};
+          const d: any = item.details || {};
           reset({
             date: new Date(item.date).toISOString().split("T")[0],
             receivedFrom: item.receivedFrom || "",

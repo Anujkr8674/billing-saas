@@ -92,7 +92,7 @@ export default function EditVehicleConditionPage() {
 
         if (doc && doc.details) {
           reset({
-            ...doc.details,
+            ...(doc.details as any),
             docNumber: doc.docNumber,
             date: new Date(doc.date).toISOString().split("T")[0]
           });

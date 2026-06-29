@@ -16,9 +16,16 @@ export default async function DashboardPage() {
   const sevenDaysAgo = new Date();
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
   const queryOptions = {
     where: { userId: session.userId, createdAt: { gte: sevenDaysAgo } },
     orderBy: { createdAt: 'desc' as const },
+  };
+
+  const count30DaysOpts = {
+    where: { userId: session.userId, createdAt: { gte: thirtyDaysAgo } }
   };
 
   const [
@@ -27,7 +34,9 @@ export default async function DashboardPage() {
     subscription,
     recentSurveys, recentQuotations, recentInvoices, recentLoadingSlips,
     recentLorryReceipts, recentPackingLists, recentPaymentVouchers,
-    recentMoneyReceipts, recentVehicleConditions, recentNocForms
+    recentMoneyReceipts, recentVehicleConditions, recentNocForms,
+    surveys30, quotations30, invoices30, loadingSlips30, lorryReceipts30,
+    packingLists30, paymentVouchers30, moneyReceipts30, vehicleConditions30, nocForms30
   ] = await Promise.all([
     prisma.survey.count({ where: { userId: session.userId } }),
     prisma.quotation.count({ where: { userId: session.userId } }),
@@ -54,15 +63,32 @@ export default async function DashboardPage() {
     prisma.moneyReceipt.findMany(queryOptions),
     prisma.vehicleCondition.findMany(queryOptions),
     prisma.nOCForm.findMany(queryOptions),
+    prisma.survey.count(count30DaysOpts),
+    prisma.quotation.count(count30DaysOpts),
+    prisma.invoice.count(count30DaysOpts),
+    prisma.loadingSlip.count(count30DaysOpts),
+    prisma.lorryReceipt.count(count30DaysOpts),
+    prisma.packingList.count(count30DaysOpts),
+    prisma.paymentVoucher.count(count30DaysOpts),
+    prisma.moneyReceipt.count(count30DaysOpts),
+    prisma.vehicleCondition.count(count30DaysOpts),
+    prisma.nOCForm.count(count30DaysOpts),
   ]);
 
   const totalDocuments = surveys + quotations + invoices + loadingSlips + lorryReceipts +
     packingLists + paymentVouchers + moneyReceipts + vehicleConditions + nocForms;
 
+  const last7DaysTotal = recentSurveys.length + recentQuotations.length + recentInvoices.length + 
+    recentLoadingSlips.length + recentLorryReceipts.length + recentPackingLists.length + 
+    recentPaymentVouchers.length + recentMoneyReceipts.length + recentVehicleConditions.length + recentNocForms.length;
+
+  const last30DaysTotal = surveys30 + quotations30 + invoices30 + loadingSlips30 + lorryReceipts30 + 
+    packingLists30 + paymentVouchers30 + moneyReceipts30 + vehicleConditions30 + nocForms30;
+
   const stats = [
     { name: "Total Documents", value: totalDocuments.toString(), icon: FileText, color: "text-primary", bg: "bg-primary/10" },
-    { name: "Total Invoices", value: invoices.toString(), icon: Receipt, color: "text-green-500", bg: "bg-green-500/10" },
-    { name: "Total Quotations", value: quotations.toString(), icon: FileSpreadsheet, color: "text-purple-500", bg: "bg-purple-500/10" },
+    { name: "Last 7 Days", value: last7DaysTotal.toString(), icon: FileText, color: "text-green-500", bg: "bg-green-500/10" },
+    { name: "Last 30 Days", value: last30DaysTotal.toString(), icon: FileText, color: "text-purple-500", bg: "bg-purple-500/10" },
   ];
 
   const documentStats = [

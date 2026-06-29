@@ -29,7 +29,7 @@ export default function ReportsPage() {
 
   if (loading) {
     return (
-      <div className="flex h-full items-center justify-center bg-gray-50/30">
+      <div className="flex h-full items-center justify-center bg-muted/30">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
@@ -47,13 +47,13 @@ export default function ReportsPage() {
     <div className="p-6 max-w-7xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
       
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between bg-card py-3 px-4 sm:py-4 sm:px-6 rounded-xl shadow-sm border border-[#5b21b6]/20">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-            <BarChart3 className="w-8 h-8 text-blue-600" />
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground flex items-center gap-2 sm:gap-3">
+            <BarChart3 className="w-6 h-6 sm:w-8 sm:h-8 text-[#5b21b6]" />
             Financial & Document Reports
           </h1>
-          <p className="text-gray-500 mt-1">Comprehensive overview of your business performance.</p>
+          <p className="text-muted-foreground mt-1 text-sm sm:text-base">Comprehensive overview of your business performance.</p>
         </div>
       </div>
 
@@ -64,28 +64,28 @@ export default function ReportsPage() {
           value={formatCurrency(data.kpis.totalInvoiced)} 
           icon={<FileText className="w-5 h-5 text-blue-600" />}
           trend="+12%" trendUp={true}
-          color="bg-blue-50"
+          color="bg-blue-50 dark:bg-blue-900/20"
         />
         <KPICard 
           title="Total Received" 
           value={formatCurrency(data.kpis.totalReceived)} 
           icon={<DollarSign className="w-5 h-5 text-emerald-600" />}
           trend="+8%" trendUp={true}
-          color="bg-emerald-50"
+          color="bg-emerald-50 dark:bg-emerald-900/20"
         />
         <KPICard 
           title="Total Expenses" 
           value={formatCurrency(data.kpis.totalExpenses)} 
           icon={<ArrowDownRight className="w-5 h-5 text-rose-600" />}
           trend="-2%" trendUp={false}
-          color="bg-rose-50"
+          color="bg-rose-50 dark:bg-rose-900/20"
         />
         <KPICard 
           title="Total Quotations" 
           value={formatCurrency(data.kpis.totalQuotations)} 
           icon={<ArrowUpRight className="w-5 h-5 text-amber-600" />}
           trend="+5%" trendUp={true}
-          color="bg-amber-50"
+          color="bg-amber-50 dark:bg-amber-900/20"
         />
       </div>
 
@@ -93,10 +93,10 @@ export default function ReportsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* Revenue Area Chart */}
-        <div className="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+        <div className="lg:col-span-2 bg-card rounded-2xl shadow-sm border border-border p-6">
           <div className="mb-6">
-            <h2 className="text-lg font-bold text-gray-900">Revenue Trend (Last 12 Months)</h2>
-            <p className="text-sm text-gray-500">Invoiced vs Received amounts</p>
+            <h2 className="text-lg font-bold text-foreground">Revenue Trend (Last 12 Months)</h2>
+            <p className="text-sm text-muted-foreground">Invoiced vs Received amounts</p>
           </div>
           <div className="h-[350px] w-full">
             <ResponsiveContainer width="100%" height="100%">
@@ -127,10 +127,10 @@ export default function ReportsPage() {
         </div>
 
         {/* Invoice Status Donut Chart */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col">
+        <div className="bg-card rounded-2xl shadow-sm border border-border p-6 flex flex-col">
           <div className="mb-2">
-            <h2 className="text-lg font-bold text-gray-900">Invoice Status</h2>
-            <p className="text-sm text-gray-500">Breakdown of invoices</p>
+            <h2 className="text-lg font-bold text-foreground">Invoice Status</h2>
+            <p className="text-sm text-muted-foreground">Breakdown of invoices</p>
           </div>
           <div className="flex-1 flex items-center justify-center">
             {data.invoiceStatuses.length > 0 ? (
@@ -164,10 +164,10 @@ export default function ReportsPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Document Distribution Pie Chart */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+        <div className="bg-card rounded-2xl shadow-sm border border-border p-6">
           <div className="mb-2 flex items-center gap-2">
             <PieChartIcon className="w-5 h-5 text-purple-600" />
-            <h2 className="text-lg font-bold text-gray-900">Document Distribution</h2>
+            <h2 className="text-lg font-bold text-foreground">Document Distribution</h2>
           </div>
           <div className="h-[300px] w-full mt-4">
             <ResponsiveContainer width="100%" height="100%">
@@ -205,10 +205,10 @@ export default function ReportsPage() {
         </div>
 
         {/* Income vs Expenses Bar Chart */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+        <div className="bg-card rounded-2xl shadow-sm border border-border p-6">
           <div className="mb-2 flex items-center gap-2">
             <TrendingUp className="w-5 h-5 text-indigo-600" />
-            <h2 className="text-lg font-bold text-gray-900">Income vs Expenses</h2>
+            <h2 className="text-lg font-bold text-foreground">Income vs Expenses</h2>
           </div>
           <div className="h-[300px] w-full mt-4">
             <ResponsiveContainer width="100%" height="100%">
@@ -232,20 +232,20 @@ export default function ReportsPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pb-8">
         {/* Top Clients */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+        <div className="bg-card rounded-2xl shadow-sm border border-border p-6">
           <div className="mb-4 flex items-center gap-2">
             <Users className="w-5 h-5 text-indigo-600" />
-            <h2 className="text-lg font-bold text-gray-900">Top Clients by Revenue</h2>
+            <h2 className="text-lg font-bold text-foreground">Top Clients by Revenue</h2>
           </div>
           <div className="space-y-4">
             {data.topClients && data.topClients.length > 0 ? (
               data.topClients.map((client: any, i: number) => (
-                <div key={i} className="flex items-center justify-between p-3 rounded-xl hover:bg-gray-50 transition-colors border border-transparent hover:border-gray-100">
+                <div key={i} className="flex items-center justify-between p-3 rounded-xl hover:bg-gray-50 transition-colors border border-transparent hover:border-border">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-sm">
                       {client.name.charAt(0).toUpperCase()}
                     </div>
-                    <span className="font-medium text-gray-900 truncate max-w-[150px] sm:max-w-[200px]">{client.name}</span>
+                    <span className="font-medium text-foreground truncate max-w-[150px] sm:max-w-[200px]">{client.name}</span>
                   </div>
                   <span className="font-bold text-gray-700">{formatCurrency(client.amount)}</span>
                 </div>
@@ -257,15 +257,15 @@ export default function ReportsPage() {
         </div>
 
         {/* Recent Activity */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+        <div className="bg-card rounded-2xl shadow-sm border border-border p-6">
           <div className="mb-4 flex items-center gap-2">
             <Clock className="w-5 h-5 text-rose-500" />
-            <h2 className="text-lg font-bold text-gray-900">Recent Activity</h2>
+            <h2 className="text-lg font-bold text-foreground">Recent Activity</h2>
           </div>
           <div className="space-y-4">
             {data.recentActivity && data.recentActivity.length > 0 ? (
               data.recentActivity.map((doc: any, i: number) => (
-                <div key={i} className="flex flex-wrap items-center justify-between p-3 rounded-xl hover:bg-gray-50 transition-colors border border-transparent hover:border-gray-100 gap-2">
+                <div key={i} className="flex flex-wrap items-center justify-between p-3 rounded-xl hover:bg-gray-50 transition-colors border border-transparent hover:border-border gap-2">
                   <div className="flex items-center gap-3">
                     <div className={`text-xs font-semibold px-2 py-1 rounded-md ${
                       doc.type === 'Invoice' ? 'bg-blue-100 text-blue-700' :
@@ -276,13 +276,13 @@ export default function ReportsPage() {
                       {doc.type}
                     </div>
                     <div className="flex flex-col">
-                      <span className="text-sm font-medium text-gray-900">{doc.id}</span>
-                      <span className="text-xs text-gray-500">{new Date(doc.date).toLocaleDateString('en-IN')}</span>
+                      <span className="text-sm font-medium text-foreground">{doc.id}</span>
+                      <span className="text-xs text-muted-foreground">{new Date(doc.date).toLocaleDateString('en-IN')}</span>
                     </div>
                   </div>
                   <div className="flex flex-col items-end">
-                    <span className="text-sm font-bold text-gray-900">{formatCurrency(doc.amount)}</span>
-                    {doc.client !== 'N/A' && <span className="text-xs text-gray-500 truncate max-w-[100px]">{doc.client}</span>}
+                    <span className="text-sm font-bold text-foreground">{formatCurrency(doc.amount)}</span>
+                    {doc.client !== 'N/A' && <span className="text-xs text-muted-foreground truncate max-w-[100px]">{doc.client}</span>}
                   </div>
                 </div>
               ))
@@ -299,11 +299,11 @@ export default function ReportsPage() {
 
 function KPICard({ title, value, icon, trend, trendUp, color }: any) {
   return (
-    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between group hover:shadow-md transition-all duration-300">
+    <div className="bg-card rounded-2xl p-6 shadow-sm border border-border flex flex-col justify-between group hover:shadow-md transition-all duration-300">
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-sm font-medium text-gray-500 mb-1">{title}</p>
-          <h3 className="text-2xl font-bold text-gray-900">{value}</h3>
+          <p className="text-sm font-medium text-muted-foreground mb-1">{title}</p>
+          <h3 className="text-2xl font-bold text-foreground">{value}</h3>
         </div>
         <div className={`p-3 rounded-xl ${color}`}>
           {icon}

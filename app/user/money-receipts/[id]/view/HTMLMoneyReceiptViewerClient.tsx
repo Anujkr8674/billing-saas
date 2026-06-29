@@ -3,13 +3,14 @@ import { useState, useRef, useEffect } from "react";
 import { generateMoneyReceiptPDF } from "@/lib/moneyreceipt-pdf-generator";
 import { sendMoneyReceiptEmail } from "@/app/actions/email";
 import { siteAssets } from "@/lib/site-assets";
-import { Download, Edit, Printer, Mail, X, ArrowLeft, FileText } from "lucide-react";
+import {  Download, Edit, Printer, Mail, X, ArrowLeft, FileText , MoreVertical } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useAlert } from "@/components/providers/AlertModalProvider";
 
 export default function HTMLMoneyReceiptViewerClient({ receipt, userProfile }: { receipt: any, userProfile: any }) {
   const [downloading, setDownloading] = useState(false);
+  const [isActionMenuOpen, setIsActionMenuOpen] = useState(false);
   const [emailing, setEmailing] = useState(false);
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
   const [recipientEmail, setRecipientEmail] = useState(receipt.details?.email || "");
@@ -73,35 +74,74 @@ export default function HTMLMoneyReceiptViewerClient({ receipt, userProfile }: {
 
   return (
     <div className="flex flex-col h-full overflow-hidden bg-muted/20 print:block print:overflow-visible print:bg-white print:h-auto">
-      <div className="flex items-center justify-between mb-4 shrink-0 px-2 print:hidden">
+      <div className="flex flex-row items-center justify-between gap-2 sm:gap-4 bg-card py-2 sm:py-3 px-3 sm:px-4 rounded-xl shadow-sm border border-[#5b21b6]/20 mb-6 shrink-0 print:hidden overflow-x-auto">
         <div>
-          <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
-            <FileText className="w-6 h-6 text-[#5b21b6]" /> View Money Receipt
+          <h1 className="text-sm sm:text-2xl font-bold text-foreground flex items-center gap-1.5 sm:gap-2 truncate whitespace-nowrap">
+            <FileText className="w-4 h-4 sm:w-6 sm:h-6 shrink-0 text-[#5b21b6]" /> View Money Receipt
           </h1>
         </div>
-        <div className="flex flex-nowrap whitespace-nowrap items-center gap-4 print:hidden overflow-x-auto custom-scrollbar pb-1">
-          <Link href="/user/money-receipts" className="text-[#5b21b6] hover:underline flex items-center gap-2 font-medium text-sm mr-4">
-            <ArrowLeft className="w-4 h-4" /> Back to Money Receipts
-          </Link>
-          <button 
+        <div className="flex items-center gap-2 sm:gap-4 print:hidden shrink-0">
+          <Link href="/user/money-receipts" className="text-[#5b21b6] hover:underline flex items-center gap-1 sm:gap-2 font-medium text-sm mr-2 sm:mr-4">
+            <ArrowLeft className="w-4 h-4" /> <span className="hidden sm:inline">Back to Money Receipts</span><span className="sm:hidden">Back</span></Link>
+          
+          {/* Desktop Actions */}
+          <div className="hidden md:flex items-center gap-3">
+            <button 
             onClick={handlePrint}
             className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors shadow-sm text-sm"
           >
             <Printer className="w-4 h-4" /> Print
           </button>
-          <button 
+            <button 
             onClick={() => setIsEmailModalOpen(true)}
             className="flex items-center gap-1.5 px-3 py-1.5 border border-[#5b21b6] text-[#5b21b6] font-medium rounded-lg hover:bg-purple-50 transition-colors bg-white shadow-sm text-sm"
           >
             <Mail className="w-4 h-4" /> Send Email
           </button>
-          <button 
+            <button 
             onClick={handleDownload}
             disabled={downloading}
             className="flex items-center gap-1.5 px-3 py-1.5 bg-[#5b21b6] text-white font-medium rounded-lg hover:bg-[#5b21b6]/90 transition-colors shadow-sm disabled:opacity-50 text-sm"
           >
             <Download className="w-4 h-4" /> {downloading ? "Generating..." : "Download PDF"}
           </button>
+          </div>
+
+          {/* Mobile Actions Dropdown */}
+          <div className="md:hidden relative">
+            <button 
+              onClick={() => setIsActionMenuOpen(!isActionMenuOpen)} 
+              className="p-2 border border-gray-300 rounded-lg bg-white hover:bg-gray-50 text-gray-700 shadow-sm"
+            >
+              <MoreVertical className="w-5 h-5" />
+            </button>
+            {isActionMenuOpen && (
+              <>
+                <div className="fixed inset-0 z-40" onClick={() => setIsActionMenuOpen(false)}></div>
+                <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50 flex flex-col p-2 gap-2">
+                  <button 
+            onClick={handlePrint}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors shadow-sm text-sm"
+          >
+            <Printer className="w-4 h-4" /> Print
+          </button>
+            <button 
+            onClick={() => setIsEmailModalOpen(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 border border-[#5b21b6] text-[#5b21b6] font-medium rounded-lg hover:bg-purple-50 transition-colors bg-white shadow-sm text-sm"
+          >
+            <Mail className="w-4 h-4" /> Send Email
+          </button>
+            <button 
+            onClick={handleDownload}
+            disabled={downloading}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#5b21b6] text-white font-medium rounded-lg hover:bg-[#5b21b6]/90 transition-colors shadow-sm disabled:opacity-50 text-sm"
+          >
+            <Download className="w-4 h-4" /> {downloading ? "Generating..." : "Download PDF"}
+          </button>
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </div>
 
@@ -109,7 +149,7 @@ export default function HTMLMoneyReceiptViewerClient({ receipt, userProfile }: {
       <div className="flex-1 overflow-y-auto custom-scrollbar pb-10 relative print:block print:overflow-visible print:h-auto px-4 lg:px-0">
         <div 
           ref={printRef}
-          className="max-w-5xl mx-auto bg-white text-black p-8 rounded-xl shadow-lg border border-gray-200 min-h-[1056px] relative overflow-hidden print:shadow-none print:border-none print:p-0"
+          className="min-w-[800px] md:min-w-0 max-w-5xl mx-auto bg-white text-black p-8 rounded-xl shadow-lg border border-gray-200 min-h-[1056px] relative overflow-hidden print:shadow-none print:border-none print:p-0"
         >
 
 

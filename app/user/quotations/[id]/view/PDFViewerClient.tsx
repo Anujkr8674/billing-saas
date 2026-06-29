@@ -31,15 +31,14 @@ export default function PDFViewerClient({ quotation, profile }: { quotation: any
     <>
       <div className="flex items-center justify-between mb-4 shrink-0">
         <div>
-          <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
+          <h1 className="text-sm sm:text-2xl font-bold text-foreground flex items-center gap-1.5 sm:gap-2 truncate whitespace-nowrap">
             <FileText className="w-6 h-6 text-primary" /> Billing & Documents
           </h1>
           <p className="text-sm text-muted-foreground mt-1">View your generated quotation document below.</p>
         </div>
         <div className="flex items-center gap-4">
           <Link href="/user/quotations" className="text-primary hover:underline flex items-center gap-2 font-medium text-sm">
-            <ArrowLeft className="w-4 h-4" /> Back to Quotations
-          </Link>
+            <ArrowLeft className="w-4 h-4" /> <span className="hidden sm:inline">Back to Quotations</span><span className="sm:hidden">Back</span></Link>
           <button 
             onClick={handleDownload}
             disabled={!pdfDataUri}

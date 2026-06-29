@@ -46,6 +46,15 @@ export async function POST(req: NextRequest) {
       });
     }
 
+    if (userProfile?.pageTheme) {
+      res.cookies.set({
+        name: 'userPageTheme',
+        value: encodeURIComponent(userProfile.pageTheme),
+        path: '/',
+        maxAge: 31536000
+      });
+    }
+
     return res;
   } catch (error) {
     console.error(error);

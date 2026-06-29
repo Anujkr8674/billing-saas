@@ -64,6 +64,7 @@ model UserProfile {
   companyStamp       String?
   termsConditions    String?
   sidebarTheme       String?  @default("green")
+  pageTheme          String?  @default("system")
   recentColors       String?  @default("[]")
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
@@ -279,6 +280,7 @@ model Admin {
   mobile        String
   passwordHash  String
   sidebarTheme  String?   @default("purple")
+  pageTheme     String?   @default("system")
   recentColors  String?   @default("[]")
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt

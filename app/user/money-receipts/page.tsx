@@ -33,14 +33,14 @@ export default function MoneyReceiptsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-row items-center justify-between gap-2 sm:gap-4 bg-card py-2 px-3 sm:px-4 rounded-lg shadow-sm border border-primary/20 mb-4 sm:mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Money Receipts</h1>
-          <p className="text-muted-foreground text-sm">Manage your money receipts</p>
+          <h1 className="text-lg sm:text-2xl font-bold text-foreground truncate">Money Receipts</h1>
+          <p className="text-muted-foreground text-xs sm:text-sm truncate hidden sm:block">Manage your money receipts</p>
         </div>
         <Link 
           href="/user/money-receipts/new" 
-          className="flex items-center gap-2 bg-[#5b21b6] text-white px-4 py-2 rounded-lg hover:bg-[#5b21b6]/90 transition-colors shadow-sm font-medium w-fit"
+          className="flex items-center gap-2 bg-[#5b21b6] text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-sm sm:text-base hover:bg-[#5b21b6]/90 transition-colors shadow-sm font-medium w-fit"
         >
           <Plus className="w-5 h-5" /> Create Money Receipt
         </Link>
@@ -58,7 +58,7 @@ export default function MoneyReceiptsPage() {
             <p className="text-muted-foreground mb-6">Create your first money receipt to get started.</p>
             <Link 
               href="/user/money-receipts/new" 
-              className="bg-[#f3e8ff] text-[#5b21b6] font-medium px-4 py-2 rounded-lg hover:bg-[#e9d5ff] transition-colors"
+              className="bg-[#f3e8ff] text-[#5b21b6] font-medium px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-sm sm:text-base hover:bg-[#e9d5ff] transition-colors"
             >
               Create New
             </Link>

@@ -102,7 +102,7 @@ export default function Home() {
 
             <Reveal direction="left" delay={0.2}>
               <div className="relative mt-12 lg:mt-0 animate-float-slow">
-                <img src="/images/hero2.png" alt="Dashboard Preview" className="w-full h-auto object-contain rounded-xl border border-gray-200/60 bg-white relative z-10 shadow-2xl" />
+                <img src="/images/hero4.png" alt="Dashboard Preview" className="w-full h-auto object-contain rounded-xl border border-gray-200/60 bg-white relative z-10 shadow-2xl" />
               </div>
             </Reveal>
           </div>
@@ -213,74 +213,80 @@ export default function Home() {
       {/* --- WHY CHOOSE US / MISSION SECTION --- */}
       <section id="about" className="py-24 px-6 bg-white overflow-hidden">
         <div className="max-w-5xl mx-auto lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-x-10 gap-y-8 lg:gap-x-12 items-center">
+
+            {/* Row 1: Header (Spans 7, empty 5 on desktop) */}
             <div className="lg:col-span-7">
               <Reveal direction="right">
-                <div>
-                  <h2 className="text-3xl lg:text-4xl font-bold text-[#5b21b6] mb-4">Why Choose Packers Billing?</h2>
-                  <p className="text-lg text-slate-600 mb-8 leading-relaxed">
-                    Logistics is the backbone of the economy, yet the software powering it is often stuck in the past. Creating quotes on paper or depending on computer templates is difficult. Packers Billing is the definitive solution to these problems.
-                  </p>
+                <h2 className="text-3xl lg:text-4xl font-bold text-[#5b21b6] mb-4">Why Choose Packers Billing?</h2>
+                <p className="text-lg text-slate-600 leading-relaxed">
+                  Logistics is the backbone of the economy, yet the software powering it is often stuck in the past. Creating quotes on paper or depending on computer templates is difficult. Packers Billing is the definitive solution to these problems.
+                </p>
+              </Reveal>
+            </div>
+            <div className="hidden lg:block lg:col-span-5"></div>
 
-                  <div className="space-y-3">
-                    {[
-                      {
-                        id: 0,
-                        title: "Bilty & Quotation On-the-Go",
-                        desc: "No need to sit in the office! Generate professional Bilty (LR), Bills, and Receipts directly from your mobile, anywhere, anytime.",
-                        icon: <Zap className={`w-6 h-6 ${activeFeature === 0 ? 'text-white' : 'text-primary'}`} />,
-                        iconBg: activeFeature === 0 ? 'bg-primary' : 'bg-primary/10',
-                        image: "https://images.unsplash.com/photo-1512428559087-560fa5ceab42?q=80&w=2070&auto=format&fit=crop"
-                      },
-                      {
-                        id: 1,
-                        title: "100% Easy to Use",
-                        desc: "It is so easy to use that even your helper can learn it in 2 minutes. No technical knowledge required!",
-                        icon: <ShieldCheck className={`w-6 h-6 ${activeFeature === 1 ? 'text-white' : 'text-emerald-500'}`} />,
-                        iconBg: activeFeature === 1 ? 'bg-emerald-500' : 'bg-emerald-500/10',
-                        image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2015&auto=format&fit=crop"
-                      },
-                      {
-                        id: 2,
-                        title: "Professional Identity",
-                        desc: "When you send a digital, clean bill and quotation to the customer, their trust in your business increases instantly.",
-                        icon: <FileCheck className={`w-6 h-6 ${activeFeature === 2 ? 'text-white' : 'text-amber-500'}`} />,
-                        iconBg: activeFeature === 2 ? 'bg-amber-500' : 'bg-amber-500/10',
-                        image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=2070&auto=format&fit=crop"
-                      }
-                    ].map((feature) => (
-                      <div
-                        key={feature.id}
-                        onClick={() => setActiveFeature(feature.id)}
-                        className={`flex gap-5 p-5 rounded-2xl cursor-pointer transition-all duration-300 border-2 ${activeFeature === feature.id ? 'border-primary shadow-md bg-primary/5' : 'border-transparent hover:bg-slate-50'}`}
-                      >
-                        <div className={`w-14 h-14 rounded-full flex items-center justify-center shrink-0 transition-colors duration-300 ${feature.iconBg}`}>
-                          {feature.icon}
-                        </div>
-                        <div>
-                          <h3 className="text-xl font-bold text-slate-900 mb-1">{feature.title}</h3>
-                          <p className="text-slate-600 text-sm md:text-base leading-relaxed">{feature.desc}</p>
-                        </div>
+            {/* Row 2: Cards (Spans 7) and Image (Spans 5) */}
+            <div className="lg:col-span-7">
+              <Reveal direction="right">
+                <div className="space-y-3">
+                  {[
+                    {
+                      id: 0,
+                      title: "Bilty & Quotation On-the-Go",
+                      desc: "No need to sit in the office! Generate professional Bilty (LR), Bills, and Receipts directly from your mobile, anywhere, anytime.",
+                      icon: <Zap className={`w-6 h-6 ${activeFeature === 0 ? 'text-white' : 'text-primary'}`} />,
+                      iconBg: activeFeature === 0 ? 'bg-primary' : 'bg-primary/10',
+                      image: "images/img2.png"
+                    },
+                    {
+                      id: 1,
+                      title: "100% Easy to Use",
+                      desc: "It is so easy to use that even your helper can learn it in 2 minutes. No technical knowledge required!",
+                      icon: <ShieldCheck className={`w-6 h-6 ${activeFeature === 1 ? 'text-white' : 'text-emerald-500'}`} />,
+                      iconBg: activeFeature === 1 ? 'bg-emerald-500' : 'bg-emerald-500/10',
+                      image: "images/img3.png"
+                    },
+                    {
+                      id: 2,
+                      title: "Professional Identity",
+                      desc: "When you send a digital, clean bill and quotation to the customer, their trust in your business increases instantly.",
+                      icon: <FileCheck className={`w-6 h-6 ${activeFeature === 2 ? 'text-white' : 'text-amber-500'}`} />,
+                      iconBg: activeFeature === 2 ? 'bg-amber-500' : 'bg-amber-500/10',
+                      image: "images/img4.avif"
+                    }
+                  ].map((feature) => (
+                    <div
+                      key={feature.id}
+                      onClick={() => setActiveFeature(feature.id)}
+                      className={`flex gap-5 p-5 rounded-2xl cursor-pointer transition-all duration-300 border-2 ${activeFeature === feature.id ? 'border-primary shadow-md bg-primary/5' : 'border-transparent hover:bg-slate-50'}`}
+                    >
+                      <div className={`w-14 h-14 rounded-full flex items-center justify-center shrink-0 transition-colors duration-300 ${feature.iconBg}`}>
+                        {feature.icon}
                       </div>
-                    ))}
-                  </div>
+                      <div>
+                        <h3 className="text-xl font-bold text-slate-900 mb-1">{feature.title}</h3>
+                        <p className="text-slate-600 text-sm md:text-base leading-relaxed">{feature.desc}</p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </Reveal>
             </div>
 
             <div className="lg:col-span-5">
               <Reveal direction="left" delay={0.2}>
-                <div className="relative h-[350px] md:h-[450px] lg:h-[500px] w-full">
+                <div className="relative h-[320px] md:h-[380px] lg:h-[400px] w-full">
                   {[
-                    "https://images.unsplash.com/photo-1512428559087-560fa5ceab42?q=80&w=2070&auto=format&fit=crop",
-                    "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2015&auto=format&fit=crop",
-                    "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=2070&auto=format&fit=crop"
+                    "/images/img2.png",
+                    "/images/img3.png",
+                    "/images/img4.avif"
                   ].map((img, idx) => (
                     <img
                       key={idx}
                       src={img}
                       alt="Feature Preview"
-                      className={`absolute inset-0 w-full h-full object-cover rounded-3xl shadow-xl transition-opacity duration-500 ease-in-out ${activeFeature === idx ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
+                      className={`absolute inset-0 w-full h-full object-contain rounded-3xl transition-opacity duration-500 ease-in-out ${activeFeature === idx ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
                     />
                   ))}
                   <div className="absolute -inset-4 border-2 border-primary/20 rounded-[2.5rem] -z-10 hidden md:block"></div>

@@ -26,7 +26,7 @@ export default function ClientLayout({
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isModalDismissed, setIsModalDismissed] = useState(false);
   const pathname = usePathname();
-  const { userSidebarTheme, setUserSidebarTheme } = useTheme();
+  const { userSidebarTheme, setUserSidebarTheme, userPageTheme } = useTheme();
 
   useEffect(() => {
     // If the database has a different theme than what the local browser context has, sync it.
@@ -114,7 +114,7 @@ export default function ClientLayout({
   const logoSrc = userProfile?.companyLogo ? userProfile.companyLogo : siteAssets.logo;
 
   return (
-    <div className="flex h-screen bg-background overflow-hidden print:block print:h-auto print:overflow-visible print:bg-white">
+    <div className={`flex h-screen overflow-hidden print:block print:h-auto print:overflow-visible print:bg-white ${userPageTheme?.startsWith("#") ? "bg-transparent" : "bg-background"}`}>
       {/* Mobile overlay */}
       {isMobileMenuOpen && (
         <div 

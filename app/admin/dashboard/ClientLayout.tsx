@@ -22,7 +22,7 @@ export default function ClientLayout({
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const pathname = usePathname();
-  const { adminSidebarTheme, setAdminSidebarTheme } = useTheme();
+  const { adminSidebarTheme, setAdminSidebarTheme, adminPageTheme, setAdminPageTheme } = useTheme();
 
   useEffect(() => {
     const dbTheme = userProfile?.sidebarTheme;
@@ -30,7 +30,13 @@ export default function ClientLayout({
       setAdminSidebarTheme(dbTheme);
       document.cookie = `adminSidebarTheme=${encodeURIComponent(dbTheme)}; path=/; max-age=31536000`;
     }
-  }, [userProfile?.sidebarTheme]);
+    
+    const dbPageTheme = userProfile?.adminPageTheme;
+    if (dbPageTheme && dbPageTheme !== adminPageTheme) {
+      setAdminPageTheme(dbPageTheme);
+      document.cookie = `adminPageTheme=${encodeURIComponent(dbPageTheme)}; path=/; max-age=31536000`;
+    }
+  }, [userProfile?.sidebarTheme, userProfile?.adminPageTheme]);
 
 
   const links = [
@@ -93,7 +99,7 @@ export default function ClientLayout({
   const logoSrc = siteAssets.logo;
 
   return (
-    <div className="flex h-screen bg-background overflow-hidden">
+    <div className={`flex h-screen overflow-hidden ${adminPageTheme?.startsWith("#") ? "bg-transparent" : "bg-background"}`}>
       {/* Mobile overlay */}
       {isMobileMenuOpen && (
         <div 
@@ -190,7 +196,7 @@ export default function ClientLayout({
           </div>
         </header>
         {/* Page Content */}
-        <div className="flex-1 overflow-y-auto p-4 md:p-6 bg-background scrollbar-transparent">
+        <div className="flex-1 overflow-y-auto p-4 md:p-6 scrollbar-transparent">
           {children}
         </div>
       </main>

@@ -131,11 +131,16 @@ export default function EditNOCFormPage({ params }: { params: Promise<{ id: stri
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 pb-8">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">Edit NOC Form</h1>
-        </div>
+    <div className="max-w-6xl mx-auto space-y-6 pb-20">
+<div className="flex flex-row items-center justify-between gap-2 sm:gap-4 bg-card py-2 px-3 sm:px-4 rounded-lg shadow-sm border border-primary/20 mb-4 sm:mb-6">
+        <h1 className="text-lg sm:text-2xl font-bold text-foreground truncate">Edit NOC Form</h1>
+        <button 
+          type="button"
+          onClick={() => router.push("/user/noc-forms")} 
+          className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 border border-red-200 font-medium rounded-xl hover:bg-red-100 transition-colors shadow-sm text-sm whitespace-nowrap"
+        >
+          Cancel
+        </button>
       </div>
 
       <form className="space-y-6" id="noc-form">
@@ -300,15 +305,12 @@ export default function EditNOCFormPage({ params }: { params: Promise<{ id: stri
       </form>
 
       {/* Action Bar */}
-      <div className="mt-8 bg-card border border-border rounded-lg p-4 px-8 flex justify-between items-center shadow-sm">
-        <button 
-          onClick={() => router.push("/user/noc-forms")} 
-          className="px-4 py-2 text-sm font-semibold text-red-600 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 hover:text-red-700 transition-all shadow-sm focus:ring-2 focus:ring-red-200 focus:outline-none"
-          disabled={saving}
-        >
-          Cancel
-        </button>
-        <div className="flex gap-3">
+      <div className="bg-card p-4 border border-border rounded-xl shadow-sm flex flex-row overflow-x-auto justify-between items-center mt-6 gap-4">
+        <div className="text-xs sm:text-sm text-muted-foreground font-medium whitespace-nowrap shrink-0">
+          <span className="text-muted-foreground/60">Ready to save</span>
+        </div>
+        <div className="flex flex-row justify-end gap-2 sm:gap-3 shrink-0">
+          
           <button 
             type="button"
             onClick={() => {
@@ -317,7 +319,7 @@ export default function EditNOCFormPage({ params }: { params: Promise<{ id: stri
               handleSubmit(onSubmit)();
             }}
             disabled={saving}
-            className="px-6 py-2 bg-[#f3e8ff] text-[#5b21b6] font-medium rounded-lg hover:bg-[#e9d5ff] transition-colors flex items-center gap-2"
+            className="px-3 py-1.5 sm:px-6 sm:py-2 text-xs sm:text-sm whitespace-nowrap bg-[#f3e8ff] text-[#5b21b6] font-medium rounded-lg hover:bg-[#e9d5ff] transition-colors flex items-center gap-2"
           >
             <FileText className="w-4 h-4" />
             {saving && actionType === "save" ? "Saving..." : "Save Updates"}
@@ -330,13 +332,13 @@ export default function EditNOCFormPage({ params }: { params: Promise<{ id: stri
               handleSubmit(onSubmit)();
             }}
             disabled={saving}
-            className="px-6 py-2 bg-[#5b21b6] text-white font-medium rounded-lg hover:bg-[#5b21b6]/90 transition-colors flex items-center gap-2 shadow-sm"
+            className="px-3 py-1.5 sm:px-6 sm:py-2 text-xs sm:text-sm whitespace-nowrap bg-[#5b21b6] text-white font-medium rounded-lg hover:bg-[#5b21b6]/90 transition-colors flex items-center gap-2 shadow-sm"
           >
             <Send className="w-4 h-4" />
             {saving && actionType === "send" ? "Processing..." : "Submit & Send PDF"}
           </button>
-        </div>
       </div>
-    </div>
+</div>
+</div>
   );
 }

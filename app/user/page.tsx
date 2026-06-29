@@ -121,14 +121,15 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <div className="bg-primary/10 border border-primary/20 rounded-lg overflow-hidden py-2 px-4 shadow-sm">
-        {/* eslint-disable-next-line jsx-a11y/no-distracting-elements */}
-        <marquee className="text-sm font-semibold text-primary">
-          Welcome back, {user?.name || 'User'}! • Email: {user?.email} • Last Login / Session Started: {new Date(session.iat ? session.iat * 1000 : Date.now()).toLocaleString()}
-        </marquee>
+      <div className="bg-card border border-[#5b21b6]/20 rounded-xl overflow-hidden py-3 px-4 shadow-sm flex items-center">
+        <div className="text-sm font-semibold text-foreground whitespace-nowrap overflow-hidden w-full relative">
+          <div className="animate-marquee inline-block">
+            Welcome back, {user?.name || 'User'}! • Email: {user?.email} • Last Login / Session Started: {new Date(session.iat ? session.iat * 1000 : Date.now()).toLocaleString()}
+          </div>
+        </div>
       </div>
 
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between bg-card py-3 px-4 rounded-xl shadow-sm border border-[#5b21b6]/20">
         <h1 className="text-2xl font-bold text-foreground">Dashboard Overview</h1>
       </div>
 

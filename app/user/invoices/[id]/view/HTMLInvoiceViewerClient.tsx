@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Download, FileText, Mail, X, Printer } from "lucide-react";
+import {  ArrowLeft, Download, FileText, Mail, X, Printer , MoreVertical } from "lucide-react";
 import { generateInvoicePDF } from "@/lib/invoice-pdf-generator";
 import AlertModal from "@/components/ui/AlertModal";
 import { siteAssets } from "@/lib/site-assets";
@@ -10,6 +10,7 @@ import { sendInvoiceEmail } from "@/app/actions/email";
 
 export default function HTMLInvoiceViewerClient({ invoice, profile }: { invoice: any, profile: any }) {
   const [isDownloading, setIsDownloading] = useState(false);
+  const [isActionMenuOpen, setIsActionMenuOpen] = useState(false);
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
   const [emailInput, setEmailInput] = useState(invoice?.details?.email || "");
   const [isSendingEmail, setIsSendingEmail] = useState(false);
@@ -66,46 +67,87 @@ export default function HTMLInvoiceViewerClient({ invoice, profile }: { invoice:
 
   return (
     <div className="flex flex-col h-full overflow-hidden bg-muted/20 print:block print:overflow-visible print:bg-white print:h-auto">
-      <div className="flex items-center justify-between mb-4 shrink-0 px-2 print:hidden">
+      <div className="flex flex-row items-center justify-between gap-2 sm:gap-4 bg-card py-2 sm:py-3 px-3 sm:px-4 rounded-xl shadow-sm border border-[#5b21b6]/20 mb-6 shrink-0 print:hidden overflow-x-auto">
         <div>
-          <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
+          <h1 className="text-sm sm:text-2xl font-bold text-foreground flex items-center gap-1.5 sm:gap-2 truncate whitespace-nowrap">
             <FileText className="w-6 h-6 text-primary" /> Invoice — Overview
           </h1>
         </div>
-        <div className="flex flex-nowrap whitespace-nowrap items-center gap-4 print:hidden overflow-x-auto custom-scrollbar pb-1">
-          <Link href="/user/invoices" className="text-primary hover:underline flex items-center gap-2 font-medium text-sm mr-4">
-            <ArrowLeft className="w-4 h-4" /> Back to Invoices
-          </Link>
-          <button 
+        <div className="flex items-center gap-2 sm:gap-4 print:hidden shrink-0">
+          <Link href="/user/invoices" className="text-primary hover:underline flex items-center gap-1 sm:gap-2 font-medium text-sm mr-2 sm:mr-4">
+            <ArrowLeft className="w-4 h-4" /> <span className="hidden sm:inline">Back to Invoices</span><span className="sm:hidden">Back</span></Link>
+          
+          {/* Desktop Actions */}
+          <div className="hidden md:flex items-center gap-3">
+            <button 
             onClick={() => window.print()}
             className="flex items-center gap-2 px-5 py-2 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors shadow-sm text-sm"
           >
             <Printer className="w-4 h-4" /> Print
           </button>
-          <button 
+            <button 
             onClick={() => setIsEmailModalOpen(true)}
             className="flex items-center gap-2 px-5 py-2 bg-white border border-[#1e40af] text-[#1e40af] font-medium rounded-lg hover:bg-blue-50 transition-colors shadow-sm text-sm"
           >
             <Mail className="w-4 h-4" /> Send Email
           </button>
-          <button 
+            <button 
             onClick={handleDownload}
             disabled={isDownloading}
             className="flex items-center gap-2 px-5 py-2 bg-[#1e40af] text-white font-medium rounded-lg hover:bg-[#1e40af]/90 transition-colors shadow-sm disabled:opacity-50 text-sm"
           >
             <Download className="w-4 h-4" /> {isDownloading ? "Generating..." : "Download PDF"}
           </button>
+          </div>
+
+          {/* Mobile Actions Dropdown */}
+          <div className="md:hidden relative">
+            <button 
+              onClick={() => setIsActionMenuOpen(!isActionMenuOpen)} 
+              className="p-2 border border-gray-300 rounded-lg bg-white hover:bg-gray-50 text-gray-700 shadow-sm"
+            >
+              <MoreVertical className="w-5 h-5" />
+            </button>
+            {isActionMenuOpen && (
+              <>
+                <div className="fixed inset-0 z-40" onClick={() => setIsActionMenuOpen(false)}></div>
+                <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50 flex flex-col p-2 gap-2">
+                  <button 
+            onClick={() => window.print()}
+            className="flex items-center gap-2 px-5 py-2 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors shadow-sm text-sm"
+          >
+            <Printer className="w-4 h-4" /> Print
+          </button>
+            <button 
+            onClick={() => setIsEmailModalOpen(true)}
+            className="flex items-center gap-2 px-5 py-2 bg-white border border-[#1e40af] text-[#1e40af] font-medium rounded-lg hover:bg-blue-50 transition-colors shadow-sm text-sm"
+          >
+            <Mail className="w-4 h-4" /> Send Email
+          </button>
+            <button 
+            onClick={handleDownload}
+            disabled={isDownloading}
+            className="flex items-center gap-2 px-5 py-2 bg-[#1e40af] text-white font-medium rounded-lg hover:bg-[#1e40af]/90 transition-colors shadow-sm disabled:opacity-50 text-sm"
+          >
+            <Download className="w-4 h-4" /> {isDownloading ? "Generating..." : "Download PDF"}
+          </button>
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </div>
 
       <div className="flex-1 overflow-y-auto custom-scrollbar pb-10 relative print:block print:overflow-visible print:h-auto">
-        <div className="max-w-5xl mx-auto bg-white shadow-xl rounded-sm border border-gray-200 relative overflow-hidden print:overflow-visible print:h-auto print:border-none print:shadow-none min-h-[1122px] print:!min-h-0">
+        <div className="min-w-[800px] md:min-w-0 max-w-5xl mx-auto bg-white shadow-xl rounded-sm border border-gray-200 relative overflow-hidden print:overflow-visible print:h-auto print:border-none print:shadow-none min-h-[1122px] print:!min-h-0">
           
-          {profile?.hasWatermark !== false && (
+          {false && profile?.hasWatermark !== false && (
             <div className="absolute inset-0 pointer-events-none flex justify-center items-center z-50">
+              {false && (
               <div className="text-[5rem] md:text-[7rem] font-bold text-gray-400 opacity-15 -rotate-45 select-none text-center leading-[1.2]">
                 NEXTGEN<br />BILLING
               </div>
+            )}
             </div>
           )}
 

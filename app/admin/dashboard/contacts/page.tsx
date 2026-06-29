@@ -10,8 +10,8 @@ export default async function AdminContactsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold tracking-tight">Contact Messages</h1>
+      <div className="flex items-center justify-between bg-card py-3 px-4 sm:py-4 sm:px-6 rounded-xl shadow-sm border border-border">
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">Contact Messages</h1>
       </div>
 
       <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden">

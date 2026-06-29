@@ -3,7 +3,7 @@ import { Activity } from "lucide-react";
 export default function AdminSubscriptionsPage() {
   return (
     <div className="space-y-6">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-card py-3 px-4 sm:py-4 sm:px-6 rounded-xl shadow-sm border border-border">
         <div>
           <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
             <Activity className="w-6 h-6 text-success" />

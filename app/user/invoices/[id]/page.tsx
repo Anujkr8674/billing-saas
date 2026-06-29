@@ -42,11 +42,12 @@ export default function EditInvoicePage({ params }: { params: Promise<{ id: stri
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-foreground">Edit Invoice</h1>
+<div className="flex flex-row items-center justify-between gap-2 sm:gap-4 bg-card py-2 px-3 sm:px-4 rounded-lg shadow-sm border border-primary/20 mb-4 sm:mb-6">
+        <h1 className="text-lg sm:text-2xl font-bold text-foreground truncate">Edit Invoice</h1>
         <button 
+          type="button"
           onClick={() => router.push("/user/invoices")} 
-          className="px-4 py-2 text-sm font-semibold text-red-600 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 hover:text-red-700 transition-all shadow-sm focus:ring-2 focus:ring-red-200 focus:outline-none"
+          className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 border border-red-200 font-medium rounded-xl hover:bg-red-100 transition-colors shadow-sm text-sm whitespace-nowrap"
         >
           Cancel
         </button>

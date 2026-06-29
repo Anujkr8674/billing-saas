@@ -167,11 +167,12 @@ export default function EditQuotationPage({ params }: { params: Promise<{ id: st
 
   return (
     <div className="max-w-6xl mx-auto space-y-6 pb-20">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-foreground">Edit Quotation</h1>
+<div className="flex flex-row items-center justify-between gap-2 sm:gap-4 bg-card py-2 px-3 sm:px-4 rounded-lg shadow-sm border border-primary/20 mb-4 sm:mb-6">
+        <h1 className="text-lg sm:text-2xl font-bold text-foreground truncate">Edit Quotation</h1>
         <button 
+          type="button"
           onClick={() => router.push("/user/quotations")} 
-          className="px-4 py-2 text-sm font-semibold text-red-600 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 hover:text-red-700 transition-all shadow-sm focus:ring-2 focus:ring-red-200 focus:outline-none"
+          className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 border border-red-200 font-medium rounded-xl hover:bg-red-100 transition-colors shadow-sm text-sm whitespace-nowrap"
         >
           Cancel
         </button>
@@ -618,21 +619,26 @@ export default function EditQuotationPage({ params }: { params: Promise<{ id: st
 
       </form>
 
-      <div className="fixed bottom-0 left-0 right-0 lg:left-64 bg-card border-t border-border p-4 shadow-lg z-40 flex items-center justify-end gap-4">
-        <button 
+      <div className="bg-card p-4 border border-border rounded-xl shadow-sm flex flex-row overflow-x-auto justify-between items-center mt-6 gap-4">
+        <div className="text-xs sm:text-sm text-muted-foreground font-medium whitespace-nowrap shrink-0">
+          Items: <span className="text-foreground">{fields?.length || 0}</span>
+        </div>
+        <div className="flex flex-row justify-end gap-2 sm:gap-3 shrink-0">
+          <button 
           onClick={handleSubmit((d) => onSave(d, 'submit'))} 
           disabled={loading} 
-          className="px-6 py-2.5 bg-primary/10 text-primary font-bold rounded-lg hover:bg-primary/20 transition-colors disabled:opacity-50"
+          className="px-3 py-1.5 sm:px-6 sm:py-2 text-xs sm:text-sm whitespace-nowrap.5 bg-primary/10 text-primary font-bold rounded-lg hover:bg-primary/20 transition-colors disabled:opacity-50"
         >
           Update Quotation
         </button>
         <button 
           onClick={handleSubmit((d) => onSave(d, 'send'))} 
           disabled={loading} 
-          className="px-6 py-2.5 bg-primary text-primary-foreground font-bold rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50"
+          className="px-3 py-1.5 sm:px-6 sm:py-2 text-xs sm:text-sm whitespace-nowrap.5 bg-primary text-primary-foreground font-bold rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50"
         >
           Update & Send PDF
         </button>
+        </div>
       </div>
 
     </div>

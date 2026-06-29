@@ -56,7 +56,7 @@ export default async function AdminDashboardPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between bg-card py-3 px-4 sm:py-4 sm:px-6 rounded-xl shadow-sm border border-border">
         <h1 className="text-2xl font-bold text-foreground">Admin Overview</h1>
       </div>
 

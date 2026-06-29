@@ -161,41 +161,39 @@ export async function updateBusinessProfile(formData: FormData) {
   return { success: true };
 }
 
-export async function updateThemeSettings(theme: string, recentColors: string[], role: "admin" | "user") {
+export async function updateThemeSettings(theme: string | null, recentColors: string[], role: "admin" | "user", pageTheme?: string | null) {
   const session = await getSession();
   if (!session) return { success: false };
 
   const cookieStore = await cookies();
+  const dataToUpdate: any = { recentColors: JSON.stringify(recentColors) };
+  if (theme !== null) dataToUpdate.sidebarTheme = theme;
+  if (pageTheme !== undefined && pageTheme !== null) dataToUpdate.pageTheme = pageTheme;
   
   if (role === "admin") {
     await prisma.admin.update({
       where: { id: session.userId },
-      data: {
-        sidebarTheme: theme,
-        recentColors: JSON.stringify(recentColors)
-      }
+      data: dataToUpdate
     });
-    cookieStore.set('adminSidebarTheme', encodeURIComponent(theme), { path: '/', maxAge: 31536000 });
+    if (theme !== null) cookieStore.set('adminSidebarTheme', encodeURIComponent(theme), { path: '/', maxAge: 31536000 });
+    if (pageTheme !== undefined && pageTheme !== null) cookieStore.set('adminPageTheme', encodeURIComponent(pageTheme), { path: '/', maxAge: 31536000 });
   } else {
     const userProfile = await prisma.userProfile.findUnique({ where: { userId: session.userId } });
     if (userProfile) {
       await prisma.userProfile.update({
         where: { userId: session.userId },
-        data: {
-          sidebarTheme: theme,
-          recentColors: JSON.stringify(recentColors)
-        }
+        data: dataToUpdate
       });
     } else {
       await prisma.userProfile.create({
         data: {
           userId: session.userId,
-          sidebarTheme: theme,
-          recentColors: JSON.stringify(recentColors)
+          ...dataToUpdate
         }
       });
     }
-    cookieStore.set('userSidebarTheme', encodeURIComponent(theme), { path: '/', maxAge: 31536000 });
+    if (theme !== null) cookieStore.set('userSidebarTheme', encodeURIComponent(theme), { path: '/', maxAge: 31536000 });
+    if (pageTheme !== undefined && pageTheme !== null) cookieStore.set('userPageTheme', encodeURIComponent(pageTheme), { path: '/', maxAge: 31536000 });
   }
 
   return { success: true };

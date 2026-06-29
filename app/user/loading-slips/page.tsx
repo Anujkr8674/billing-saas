@@ -42,8 +42,8 @@ export default function LoadingSlipsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-        <h1 className="text-2xl font-bold text-foreground">Loading Slips {data.length > 0 && `(${data.length})`}</h1>
+      <div className="flex flex-row items-center justify-between gap-2 sm:gap-4 bg-card py-2 px-3 sm:px-4 rounded-lg shadow-sm border border-primary/20 mb-4 sm:mb-6">
+        <h1 className="text-lg sm:text-2xl font-bold text-foreground truncate">Loading Slips {data.length > 0 && `(${data.length})`}</h1>
         <Link href="/user/loading-slips/new" className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground font-medium rounded-xl hover:bg-primary/90 transition-colors shadow-sm">
           <Plus className="w-5 h-5" /> Create New
         </Link>

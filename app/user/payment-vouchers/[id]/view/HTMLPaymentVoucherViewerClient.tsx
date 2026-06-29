@@ -3,13 +3,14 @@ import { useState, useRef, useEffect } from "react";
 import { generatePaymentVoucherPDF } from "@/lib/paymentvoucher-pdf-generator";
 import { sendPaymentVoucherEmail } from "@/app/actions/email";
 import { siteAssets } from "@/lib/site-assets";
-import { Download, Edit, Printer, Mail, X, FileText, ArrowLeft } from "lucide-react";
+import {  Download, Edit, Printer, Mail, X, FileText, ArrowLeft , MoreVertical } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useAlert } from "@/components/providers/AlertModalProvider";
 
 export default function HTMLPaymentVoucherViewerClient({ voucher, userProfile }: { voucher: any; userProfile: any }) {
   const [downloading, setDownloading] = useState(false);
+  const [isActionMenuOpen, setIsActionMenuOpen] = useState(false);
   const [emailModalOpen, setEmailModalOpen] = useState(false);
   const [recipientEmail, setRecipientEmail] = useState("");
   const [sendingEmail, setSendingEmail] = useState(false);
@@ -75,29 +76,25 @@ export default function HTMLPaymentVoucherViewerClient({ voucher, userProfile }:
 
   return (
     <div className="flex flex-col h-full overflow-hidden bg-muted/20 print:block print:overflow-visible print:bg-white print:h-auto">
-      <div className="flex items-center justify-between mb-4 shrink-0 px-2 print:hidden overflow-x-auto pb-2">
+      <div className="flex flex-row items-center justify-between gap-2 sm:gap-4 bg-card py-2 sm:py-3 px-3 sm:px-4 rounded-xl shadow-sm border border-[#5b21b6]/20 mb-6 shrink-0 print:hidden overflow-x-auto">
         <div>
           <h1 className="text-xl font-bold text-foreground flex items-center gap-2 whitespace-nowrap mr-4">
-            <FileText className="w-6 h-6 text-[#5b21b6]" /> Payment Overview
+            <FileText className="w-4 h-4 sm:w-6 sm:h-6 shrink-0 text-[#5b21b6]" /> Payment Overview
           </h1>
         </div>
-        <div className="flex items-center gap-2 print:hidden whitespace-nowrap">
+        <div className="flex items-center gap-2 sm:gap-4 print:hidden shrink-0">
           <Link href="/user/payment-vouchers" className="text-[#5b21b6] hover:underline flex items-center gap-1.5 font-medium text-sm mr-2">
-            <ArrowLeft className="w-4 h-4" /> Back to Payment Vouchers
-          </Link>
-          <Link
-            href={`/user/payment-vouchers/${voucher.id}`}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors shadow-sm text-sm"
-          >
-            <Edit className="w-4 h-4" /> Edit
-          </Link>
-          <button
+            <ArrowLeft className="w-4 h-4" /> <span className="hidden sm:inline">Back to Payment Vouchers</span><span className="sm:hidden">Back</span></Link>
+          
+          {/* Desktop Actions */}
+          <div className="hidden md:flex items-center gap-3">
+            <button
             onClick={handlePrint}
             className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors shadow-sm text-sm"
           >
             <Printer className="w-4 h-4" /> Print
           </button>
-          <button
+            <button
             onClick={() => {
               if (voucher.details?.email) setRecipientEmail(voucher.details.email);
               setEmailModalOpen(true);
@@ -106,25 +103,67 @@ export default function HTMLPaymentVoucherViewerClient({ voucher, userProfile }:
           >
             <Mail className="w-4 h-4" /> Send Email
           </button>
-          <button
+            <button
             onClick={handleDownloadPDF}
             disabled={downloading}
             className="flex items-center gap-1.5 px-3 py-1.5 bg-[#5b21b6] text-white font-medium rounded-lg hover:bg-[#5b21b6]/90 transition-colors shadow-sm disabled:opacity-50 text-sm"
           >
             <Download className="w-4 h-4" /> {downloading ? "Generating PDF..." : "Download PDF"}
           </button>
+          </div>
+
+          {/* Mobile Actions Dropdown */}
+          <div className="md:hidden relative">
+            <button 
+              onClick={() => setIsActionMenuOpen(!isActionMenuOpen)} 
+              className="p-2 border border-gray-300 rounded-lg bg-white hover:bg-gray-50 text-gray-700 shadow-sm"
+            >
+              <MoreVertical className="w-5 h-5" />
+            </button>
+            {isActionMenuOpen && (
+              <>
+                <div className="fixed inset-0 z-40" onClick={() => setIsActionMenuOpen(false)}></div>
+                <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50 flex flex-col p-2 gap-2">
+                  <button
+            onClick={handlePrint}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors shadow-sm text-sm"
+          >
+            <Printer className="w-4 h-4" /> Print
+          </button>
+            <button
+            onClick={() => {
+              if (voucher.details?.email) setRecipientEmail(voucher.details.email);
+              setEmailModalOpen(true);
+            }}
+            className="flex items-center gap-1.5 px-3 py-1.5 border border-[#5b21b6] text-[#5b21b6] font-medium rounded-lg hover:bg-purple-50 transition-colors bg-white shadow-sm text-sm"
+          >
+            <Mail className="w-4 h-4" /> Send Email
+          </button>
+            <button
+            onClick={handleDownloadPDF}
+            disabled={downloading}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#5b21b6] text-white font-medium rounded-lg hover:bg-[#5b21b6]/90 transition-colors shadow-sm disabled:opacity-50 text-sm"
+          >
+            <Download className="w-4 h-4" /> {downloading ? "Generating PDF..." : "Download PDF"}
+          </button>
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </div>
 
       {/* HTML Document View */}
       <div className="flex-1 overflow-y-auto custom-scrollbar pb-10 relative print:block print:overflow-visible print:h-auto px-4 lg:px-0">
-        <div className="max-w-5xl mx-auto bg-white text-black p-8 rounded-xl shadow-lg border border-gray-200 min-h-[1056px] relative overflow-hidden print:shadow-none print:border-none print:p-0">
+        <div className="min-w-[800px] md:min-w-0 max-w-5xl mx-auto bg-white text-black p-8 rounded-xl shadow-lg border border-gray-200 min-h-[1056px] relative overflow-hidden print:shadow-none print:border-none print:p-0">
           {/* Watermark */}
+          {false && (
           <div className="absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none overflow-hidden">
             <h1 className="text-9xl font-black -rotate-45 whitespace-nowrap">
               {(pData.companyName || "COMPANY").toUpperCase()}
             </h1>
           </div>
+        )}
 
           <div className="relative z-10 flex flex-col h-full">
             {/* Header */}

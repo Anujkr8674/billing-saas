@@ -43,7 +43,8 @@ export default async function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <ThemeProvider 
-          initialPageTheme={cookieStore.get("pageTheme")?.value}
+          initialAdminPageTheme={cookieStore.get("adminPageTheme")?.value}
+          initialUserPageTheme={cookieStore.get("userPageTheme")?.value}
           initialAdminTheme={cookieStore.get("adminSidebarTheme")?.value ? decodeURIComponent(cookieStore.get("adminSidebarTheme")!.value) : undefined}
           initialUserTheme={cookieStore.get("userSidebarTheme")?.value ? decodeURIComponent(cookieStore.get("userSidebarTheme")!.value) : undefined}
         >

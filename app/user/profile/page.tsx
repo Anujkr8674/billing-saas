@@ -215,7 +215,9 @@ export default function ProfilePage() {
 
   return (
     <div className="p-6 max-w-5xl mx-auto space-y-6 relative">
-      <h1 className="text-2xl font-bold text-foreground mb-4">Profile Settings</h1>
+      <div className="flex items-center justify-between bg-card py-3 px-4 sm:py-4 sm:px-6 rounded-xl shadow-sm border border-[#5b21b6]/20 mb-6">
+        <h1 className="text-2xl font-bold text-foreground">Profile Settings</h1>
+      </div>
       
       {/* Modal for Success/Error Messages */}
       {message.show && (

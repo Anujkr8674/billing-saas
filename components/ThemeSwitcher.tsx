@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Moon, Sun, Palette, Monitor } from "lucide-react";
 import { HexAlphaColorPicker } from "react-colorful";
 import { useTheme } from "@/components/providers/ThemeProvider";
@@ -12,16 +12,29 @@ interface ThemeSwitcherProps {
 
 export default function ThemeSwitcher({ panelType }: ThemeSwitcherProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [showColorPicker, setShowColorPicker] = useState(false);
+  const [showSidebarColorPicker, setShowSidebarColorPicker] = useState(false);
+  const [showPageColorPicker, setShowPageColorPicker] = useState(false);
   const [recentColors, setRecentColors] = useState<string[]>([]);
+  
   const { 
-    pageTheme, setPageTheme, 
+    adminPageTheme, setAdminPageTheme,
+    userPageTheme, setUserPageTheme, 
     adminSidebarTheme, setAdminSidebarTheme, 
     userSidebarTheme, setUserSidebarTheme,
     broadcastThemeUpdate
   } = useTheme();
 
   const currentSidebarTheme = panelType === "admin" ? adminSidebarTheme : userSidebarTheme;
+  const currentPageTheme = panelType === "admin" ? adminPageTheme : userPageTheme;
+  const handlePageChange = (theme: string, shouldBroadcast: boolean = false) => {
+    if (panelType === "admin") {
+      setAdminPageTheme(theme);
+      if (shouldBroadcast) broadcastThemeUpdate("adminPage", theme);
+    } else {
+      setUserPageTheme(theme);
+      if (shouldBroadcast) broadcastThemeUpdate("userPage", theme);
+    }
+  };
   
   const handleSidebarChange = (theme: string, shouldBroadcast: boolean = false) => {
     if (panelType === "admin") {
@@ -58,39 +71,77 @@ export default function ThemeSwitcher({ panelType }: ThemeSwitcherProps) {
     });
   }, []);
 
-  const handleCustomColorBlur = (color: string) => {
+  const handleCustomColorBlur = (color: string, target: 'sidebar' | 'page') => {
     if (!color.startsWith("#")) return;
+    
+    let newColors = recentColors;
     if (!recentColors.includes(color)) {
-      const newColors = [color, ...recentColors].slice(0, 5); // keep 5 recent colors
+      newColors = [color, ...recentColors].slice(0, 5); // keep 5 recent colors
       setRecentColors(newColors);
       localStorage.setItem("recentThemeColors", JSON.stringify(newColors));
-      updateThemeSettings(color, newColors, panelType).catch(console.error);
-    } else {
-      updateThemeSettings(color, recentColors, panelType).catch(console.error);
     }
-    // Also broadcast the final color when they click Done
-    handleSidebarChange(color, true);
+    
+    if (target === 'sidebar') {
+      updateThemeSettings(color, newColors, panelType, undefined).catch(console.error);
+      handleSidebarChange(color, true);
+    } else {
+      updateThemeSettings(null, newColors, panelType, color).catch(console.error);
+      handlePageChange(color, true);
+    }
   };
 
-  const [hexInput, setHexInput] = useState(
+  const [sidebarHexInput, setSidebarHexInput] = useState(
     currentSidebarTheme?.startsWith("#") ? currentSidebarTheme : "#000000"
+  );
+  const [pageHexInput, setPageHexInput] = useState(
+    currentPageTheme?.startsWith("#") ? currentPageTheme : "#000000"
   );
   
   useEffect(() => {
-    if (currentSidebarTheme?.startsWith("#")) {
-      setHexInput(currentSidebarTheme);
-    }
-  }, [currentSidebarTheme]);
+    setSidebarHexInput((prev: string) => currentSidebarTheme?.startsWith("#") && currentSidebarTheme !== prev ? currentSidebarTheme : prev);
+    setPageHexInput((prev: string) => currentPageTheme?.startsWith("#") && currentPageTheme !== prev ? currentPageTheme : prev);
+  }, [currentSidebarTheme, currentPageTheme]);
 
-  const handleHexInputChange = (val: string) => {
-    setHexInput(val);
+  const lastBroadcastRef = useRef<number>(0);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleHexInputChange = (val: string, target: 'sidebar' | 'page') => {
+    const now = Date.now();
+    const shouldThrottleBroadcast = now - lastBroadcastRef.current > 150; 
+
+    // Update local inputs immediately for smooth typing/dragging
+    if (target === 'sidebar') {
+      setSidebarHexInput(val);
+    } else {
+      setPageHexInput(val);
+    }
+
+    const broadcast = () => {
+      if (target === 'sidebar') {
+        if (/^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{4}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$/.test(val)) {
+          handleSidebarChange(val, true);
+        }
+      } else {
+        if (/^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{4}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$/.test(val)) {
+          handlePageChange(val, true);
+        }
+      }
+      lastBroadcastRef.current = Date.now();
+    };
+
     if (/^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{4}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$/.test(val)) {
-      handleSidebarChange(val);
+      if (shouldThrottleBroadcast) {
+        if (timeoutRef.current) clearTimeout(timeoutRef.current);
+        broadcast();
+      } else {
+        if (timeoutRef.current) clearTimeout(timeoutRef.current);
+        timeoutRef.current = setTimeout(broadcast, 150);
+      }
     }
   };
 
-  const handleOpacityChange = (opacityPercent: number) => {
-    let baseHex = hexInput;
+  const handleOpacityChange = (opacityPercent: number, target: 'sidebar' | 'page') => {
+    let baseHex = target === 'sidebar' ? sidebarHexInput : pageHexInput;
     if (!baseHex.startsWith("#")) baseHex = "#000000";
     
     if (baseHex.length === 4) {
@@ -103,18 +154,25 @@ export default function ThemeSwitcher({ panelType }: ThemeSwitcherProps) {
     
     const alphaHex = Math.round((opacityPercent / 100) * 255).toString(16).padStart(2, '0');
     const newHex = baseHex + alphaHex;
-    setHexInput(newHex);
-    handleSidebarChange(newHex);
+    
+    if (target === 'sidebar') {
+      setSidebarHexInput(newHex);
+      handleSidebarChange(newHex);
+    } else {
+      setPageHexInput(newHex);
+      handlePageChange(newHex);
+    }
   };
   
-  const getOpacityPercent = () => {
-    if (!hexInput.startsWith("#")) return 100;
-    if (hexInput.length === 5) {
-      const a = hexInput[4] + hexInput[4];
+  const getOpacityPercent = (target: 'sidebar' | 'page') => {
+    const hex = target === 'sidebar' ? sidebarHexInput : pageHexInput;
+    if (!hex.startsWith("#")) return 100;
+    if (hex.length === 5) {
+      const a = hex[4] + hex[4];
       return Math.round((parseInt(a, 16) / 255) * 100);
     }
-    if (hexInput.length === 9) {
-      const a = hexInput.slice(7, 9);
+    if (hex.length === 9) {
+      const a = hex.slice(7, 9);
       return Math.round((parseInt(a, 16) / 255) * 100);
     }
     return 100;
@@ -145,71 +203,65 @@ export default function ThemeSwitcher({ panelType }: ThemeSwitcherProps) {
             
             <div className="mb-4">
               <h3 className="text-sm font-bold text-foreground mb-3">Page Theme</h3>
-              <div className="flex bg-muted rounded-lg p-1">
+              <div className="flex bg-muted rounded-lg p-1 mb-2">
                 <button
-                  onClick={() => { setPageTheme("light"); broadcastThemeUpdate("page", "light"); }}
-                  className={`flex-1 flex justify-center py-1.5 rounded-md text-xs font-medium transition-colors ${pageTheme === "light" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+                  onClick={() => { 
+                    handlePageChange("light", true);
+                    updateThemeSettings(null, recentColors, panelType, "light").catch(console.error);
+                  }}
+                  className={`flex-1 flex justify-center py-1.5 rounded-md text-xs font-medium transition-colors ${currentPageTheme === "light" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
                 >
                   <Sun className="w-4 h-4 mr-1" /> Light
                 </button>
                 <button
-                  onClick={() => { setPageTheme("dark"); broadcastThemeUpdate("page", "dark"); }}
-                  className={`flex-1 flex justify-center py-1.5 rounded-md text-xs font-medium transition-colors ${pageTheme === "dark" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+                  onClick={() => { 
+                    handlePageChange("dark", true);
+                    updateThemeSettings(null, recentColors, panelType, "dark").catch(console.error);
+                  }}
+                  className={`flex-1 flex justify-center py-1.5 rounded-md text-xs font-medium transition-colors ${currentPageTheme === "dark" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
                 >
                   <Moon className="w-4 h-4 mr-1" /> Dark
                 </button>
                 <button
-                  onClick={() => { setPageTheme("system"); broadcastThemeUpdate("page", "system"); }}
-                  className={`flex-1 flex justify-center py-1.5 rounded-md text-xs font-medium transition-colors ${pageTheme === "system" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+                  onClick={() => { 
+                    handlePageChange("system", true);
+                    updateThemeSettings(null, recentColors, panelType, "system").catch(console.error);
+                  }}
+                  className={`flex-1 flex justify-center py-1.5 rounded-md text-xs font-medium transition-colors ${currentPageTheme === "system" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
                 >
                   <Monitor className="w-4 h-4 mr-1" /> Auto
                 </button>
               </div>
-            </div>
 
-            <div>
-              <h3 className="text-sm font-bold text-foreground mb-3">Sidebar Color</h3>
-              <div className="flex flex-wrap gap-2 mb-2">
-                {sidebarOptions.map(option => (
-                  <button
-                    key={option.value}
-                    onClick={() => {
-                      handleSidebarChange(option.value, true);
-                      updateThemeSettings(option.value, recentColors, panelType).catch(console.error);
-                    }}
-                    title={option.label}
-                    className={`w-8 h-8 rounded-full border border-border flex items-center justify-center ${option.color} ${currentSidebarTheme === option.value ? 'ring-2 ring-primary ring-offset-2 ring-offset-card' : ''}`}
-                  >
-                  </button>
-                ))}
-                
-                {/* Custom Color Picker Toggle */}
+              {/* Page Custom Color Picker Toggle */}
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-xs text-muted-foreground">Custom Color:</span>
                 <div 
-                  className={`w-8 h-8 rounded-full border border-border overflow-hidden cursor-pointer relative ${showColorPicker ? 'ring-2 ring-primary ring-offset-2 ring-offset-card' : ''}`} 
-                  title="Pick Custom Color"
-                  onClick={() => setShowColorPicker(!showColorPicker)}
+                  className={`w-8 h-8 rounded-full border border-border overflow-hidden cursor-pointer relative ${showPageColorPicker ? 'ring-2 ring-primary ring-offset-2 ring-offset-card' : ''}`} 
+                  title="Pick Custom Color for Page"
+                  onClick={() => setShowPageColorPicker(!showPageColorPicker)}
                 >
                   <div className="absolute inset-0 bg-gradient-to-tr from-red-500 via-green-500 to-blue-500 pointer-events-none" />
                 </div>
               </div>
 
-              {/* Inline Custom Color Picker via react-colorful */}
-              {showColorPicker && (
+              {/* Inline Custom Color Picker via react-colorful for Page Theme */}
+              {showPageColorPicker && (
                 <div className="mb-3 p-3 bg-muted/50 border border-border rounded-xl">
                   <style>{`
                     .custom-color-picker { width: 100% !important; height: 150px !important; }
                     .custom-color-picker .react-colorful__pointer { width: 16px !important; height: 16px !important; }
                   `}</style>
                   <HexAlphaColorPicker 
-                    color={hexInput} 
-                    onChange={(color) => handleHexInputChange(color)}
+                    color={pageHexInput} 
+                    onChange={(color) => handleHexInputChange(color, 'page')}
                     className="custom-color-picker"
                   />
                   <div className="mt-3 flex justify-end">
                     <button 
                       onClick={() => {
-                        setShowColorPicker(false);
-                        handleCustomColorBlur(hexInput);
+                        setShowPageColorPicker(false);
+                        handleCustomColorBlur(pageHexInput, 'page');
                       }}
                       className="text-xs bg-primary text-primary-foreground hover:bg-primary/90 px-3 py-1.5 rounded-md transition-colors"
                     >
@@ -219,15 +271,15 @@ export default function ThemeSwitcher({ panelType }: ThemeSwitcherProps) {
                 </div>
               )}
 
-              {/* Custom HEX Input & Opacity Slider */}
+              {/* Custom HEX Input & Opacity Slider for Page */}
               <div className="mt-3 p-3 bg-muted rounded-lg border border-border">
                 <div className="flex items-center justify-between mb-2">
                   <label className="text-xs font-semibold text-foreground">HEX Color</label>
                   <input 
                     type="text" 
-                    value={hexInput}
-                    onChange={(e) => handleHexInputChange(e.target.value)}
-                    onBlur={() => handleCustomColorBlur(hexInput)}
+                    value={pageHexInput}
+                    onChange={(e) => handleHexInputChange(e.target.value, 'page')}
+                    onBlur={() => handleCustomColorBlur(pageHexInput, 'page')}
                     placeholder="#RRGGBB"
                     className="w-24 text-xs border border-border rounded px-2 py-1 bg-background text-foreground"
                   />
@@ -235,14 +287,96 @@ export default function ThemeSwitcher({ panelType }: ThemeSwitcherProps) {
                 <div className="flex flex-col gap-1">
                   <div className="flex items-center justify-between">
                     <label className="text-xs font-semibold text-foreground">Opacity</label>
-                    <span className="text-xs text-muted-foreground">{getOpacityPercent()}%</span>
+                    <span className="text-xs text-muted-foreground">{getOpacityPercent('page')}%</span>
                   </div>
                   <input 
                     type="range" 
                     min="0" 
                     max="100" 
-                    value={getOpacityPercent()}
-                    onChange={(e) => handleOpacityChange(parseInt(e.target.value))}
+                    value={getOpacityPercent('page')}
+                    onChange={(e) => handleOpacityChange(parseInt(e.target.value), 'page')}
+                    className="w-full accent-primary"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="border-t border-border pt-4">
+              <h3 className="text-sm font-bold text-foreground mb-3">Sidebar Color</h3>
+              <div className="flex flex-wrap gap-2 mb-2">
+                {sidebarOptions.map(option => (
+                  <button
+                    key={option.value}
+                    onClick={() => {
+                      handleSidebarChange(option.value, true);
+                      updateThemeSettings(option.value, recentColors, panelType, undefined).catch(console.error);
+                    }}
+                    title={option.label}
+                    className={`w-8 h-8 rounded-full border border-border flex items-center justify-center ${option.color} ${currentSidebarTheme === option.value ? 'ring-2 ring-primary ring-offset-2 ring-offset-card' : ''}`}
+                  >
+                  </button>
+                ))}
+                
+                {/* Custom Color Picker Toggle */}
+                <div 
+                  className={`w-8 h-8 rounded-full border border-border overflow-hidden cursor-pointer relative ${showSidebarColorPicker ? 'ring-2 ring-primary ring-offset-2 ring-offset-card' : ''}`} 
+                  title="Pick Custom Color"
+                  onClick={() => setShowSidebarColorPicker(!showSidebarColorPicker)}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-tr from-red-500 via-green-500 to-blue-500 pointer-events-none" />
+                </div>
+              </div>
+
+              {/* Inline Custom Color Picker via react-colorful for Sidebar */}
+              {showSidebarColorPicker && (
+                <div className="mb-3 p-3 bg-muted/50 border border-border rounded-xl">
+                  <style>{`
+                    .custom-color-picker { width: 100% !important; height: 150px !important; }
+                    .custom-color-picker .react-colorful__pointer { width: 16px !important; height: 16px !important; }
+                  `}</style>
+                  <HexAlphaColorPicker 
+                    color={sidebarHexInput} 
+                    onChange={(color) => handleHexInputChange(color, 'sidebar')}
+                    className="custom-color-picker"
+                  />
+                  <div className="mt-3 flex justify-end">
+                    <button 
+                      onClick={() => {
+                        setShowSidebarColorPicker(false);
+                        handleCustomColorBlur(sidebarHexInput, 'sidebar');
+                      }}
+                      className="text-xs bg-primary text-primary-foreground hover:bg-primary/90 px-3 py-1.5 rounded-md transition-colors"
+                    >
+                      Done
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Custom HEX Input & Opacity Slider for Sidebar */}
+              <div className="mt-3 p-3 bg-muted rounded-lg border border-border">
+                <div className="flex items-center justify-between mb-2">
+                  <label className="text-xs font-semibold text-foreground">HEX Color</label>
+                  <input 
+                    type="text" 
+                    value={sidebarHexInput}
+                    onChange={(e) => handleHexInputChange(e.target.value, 'sidebar')}
+                    onBlur={() => handleCustomColorBlur(sidebarHexInput, 'sidebar')}
+                    placeholder="#RRGGBB"
+                    className="w-24 text-xs border border-border rounded px-2 py-1 bg-background text-foreground"
+                  />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-semibold text-foreground">Opacity</label>
+                    <span className="text-xs text-muted-foreground">{getOpacityPercent('sidebar')}%</span>
+                  </div>
+                  <input 
+                    type="range" 
+                    min="0" 
+                    max="100" 
+                    value={getOpacityPercent('sidebar')}
+                    onChange={(e) => handleOpacityChange(parseInt(e.target.value), 'sidebar')}
                     className="w-full accent-primary"
                   />
                 </div>
@@ -255,13 +389,18 @@ export default function ThemeSwitcher({ panelType }: ThemeSwitcherProps) {
                     {recentColors.map(color => (
                       <button
                         key={color}
-                        onClick={() => handleSidebarChange(color)}
+                        onClick={() => {
+                           handleSidebarChange(color);
+                           handlePageChange(color, true);
+                           updateThemeSettings(color, recentColors, panelType, color).catch(console.error);
+                        }}
                         title={color}
-                        className={`w-6 h-6 rounded-full border border-border ${currentSidebarTheme === color ? 'ring-2 ring-primary ring-offset-1 ring-offset-card' : ''}`}
+                        className={`w-6 h-6 rounded-full border border-border ${currentSidebarTheme === color || currentPageTheme === color ? 'ring-2 ring-primary ring-offset-1 ring-offset-card' : ''}`}
                         style={{ backgroundColor: color }}
                       />
                     ))}
                   </div>
+                  <p className="text-[10px] text-muted-foreground mt-1">Applies to both Page and Sidebar</p>
                 </div>
               )}
             </div>

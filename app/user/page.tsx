@@ -61,8 +61,8 @@ export default async function DashboardPage() {
 
   const stats = [
     { name: "Total Documents", value: totalDocuments.toString(), icon: FileText, color: "text-primary", bg: "bg-primary/10" },
-    { name: "Subscription Plan", value: subscription?.plan?.name || "No Plan", icon: Wallet, color: "text-accent", bg: "bg-accent/10" },
-    { name: "Remaining Limits", value: subscription?.plan?.dailyLimit ? `${subscription.plan.dailyLimit}/day` : "Unlimited", icon: Truck, color: "text-warning", bg: "bg-warning/10" },
+    { name: "Total Invoices", value: invoices.toString(), icon: Receipt, color: "text-green-500", bg: "bg-green-500/10" },
+    { name: "Total Quotations", value: quotations.toString(), icon: FileSpreadsheet, color: "text-purple-500", bg: "bg-purple-500/10" },
   ];
 
   const documentStats = [

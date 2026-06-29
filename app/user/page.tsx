@@ -28,6 +28,8 @@ export default async function DashboardPage() {
     where: { userId: session.userId, createdAt: { gte: thirtyDaysAgo } }
   };
 
+  const user = await prisma.user.findUnique({ where: { id: session.userId } });
+
   const [
     surveys, quotations, invoices, loadingSlips, lorryReceipts,
     packingLists, paymentVouchers, moneyReceipts, vehicleConditions, nocForms,
@@ -119,6 +121,13 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-6">
+      <div className="bg-primary/10 border border-primary/20 rounded-lg overflow-hidden py-2 px-4 shadow-sm">
+        {/* eslint-disable-next-line jsx-a11y/no-distracting-elements */}
+        <marquee className="text-sm font-semibold text-primary">
+          Welcome back, {user?.name || 'User'}! • Email: {user?.email} • Last Login / Session Started: {new Date(session.iat ? session.iat * 1000 : Date.now()).toLocaleString()}
+        </marquee>
+      </div>
+
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-foreground">Dashboard Overview</h1>
       </div>

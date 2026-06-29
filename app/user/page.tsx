@@ -88,22 +88,22 @@ export default async function DashboardPage() {
     packingLists30 + paymentVouchers30 + moneyReceipts30 + vehicleConditions30 + nocForms30;
 
   const stats = [
-    { name: "Total Documents", value: totalDocuments.toString(), icon: FileText, color: "text-primary", bg: "bg-primary/10" },
-    { name: "Last 7 Days", value: last7DaysTotal.toString(), icon: FileText, color: "text-green-500", bg: "bg-green-500/10" },
-    { name: "Last 30 Days", value: last30DaysTotal.toString(), icon: FileText, color: "text-purple-500", bg: "bg-purple-500/10" },
+    { name: "Total Documents", value: totalDocuments.toString(), icon: FileText, color: "text-primary", bg: "bg-primary/10", solidBg: "bg-primary" },
+    { name: "Last 7 Days", value: last7DaysTotal.toString(), icon: FileText, color: "text-green-500", bg: "bg-green-500/10", solidBg: "bg-green-500" },
+    { name: "Last 30 Days", value: last30DaysTotal.toString(), icon: FileText, color: "text-purple-500", bg: "bg-purple-500/10", solidBg: "bg-purple-500" },
   ];
 
   const documentStats = [
-    { name: "Surveys", value: surveys, icon: ClipboardList, href: "/user/surveys", color: "text-blue-500", bg: "bg-blue-500/10" },
-    { name: "Quotations", value: quotations, icon: FileSpreadsheet, href: "/user/quotations", color: "text-purple-500", bg: "bg-purple-500/10" },
-    { name: "Invoices", value: invoices, icon: Receipt, href: "/user/invoices", color: "text-green-500", bg: "bg-green-500/10" },
-    { name: "Loading Slips", value: loadingSlips, icon: Truck, href: "/user/loading-slips", color: "text-orange-500", bg: "bg-orange-500/10" },
-    { name: "Lorry Receipts", value: lorryReceipts, icon: FileCheck, href: "/user/lorry-receipts", color: "text-indigo-500", bg: "bg-indigo-500/10" },
-    { name: "Packing Lists", value: packingLists, icon: Package, href: "/user/packing-lists", color: "text-pink-500", bg: "bg-pink-500/10" },
-    { name: "Payment Vouchers", value: paymentVouchers, icon: Banknote, href: "/user/payment-vouchers", color: "text-teal-500", bg: "bg-teal-500/10" },
-    { name: "Money Receipts", value: moneyReceipts, icon: Coins, href: "/user/money-receipts", color: "text-yellow-500", bg: "bg-yellow-500/10" },
-    { name: "Vehicle Conditions", value: vehicleConditions, icon: Car, href: "/user/vehicle-conditions", color: "text-cyan-500", bg: "bg-cyan-500/10" },
-    { name: "NOC Forms", value: nocForms, icon: ShieldCheck, href: "/user/noc-forms", color: "text-rose-500", bg: "bg-rose-500/10" },
+    { name: "Surveys", value: surveys, icon: ClipboardList, href: "/user/surveys", color: "text-blue-500", bg: "bg-blue-500/10", solidBg: "bg-blue-500" },
+    { name: "Quotations", value: quotations, icon: FileSpreadsheet, href: "/user/quotations", color: "text-purple-500", bg: "bg-purple-500/10", solidBg: "bg-purple-500" },
+    { name: "Invoices", value: invoices, icon: Receipt, href: "/user/invoices", color: "text-green-500", bg: "bg-green-500/10", solidBg: "bg-green-500" },
+    { name: "Loading Slips", value: loadingSlips, icon: Truck, href: "/user/loading-slips", color: "text-orange-500", bg: "bg-orange-500/10", solidBg: "bg-orange-500" },
+    { name: "Lorry Receipts", value: lorryReceipts, icon: FileCheck, href: "/user/lorry-receipts", color: "text-indigo-500", bg: "bg-indigo-500/10", solidBg: "bg-indigo-500" },
+    { name: "Packing Lists", value: packingLists, icon: Package, href: "/user/packing-lists", color: "text-pink-500", bg: "bg-pink-500/10", solidBg: "bg-pink-500" },
+    { name: "Payment Vouchers", value: paymentVouchers, icon: Banknote, href: "/user/payment-vouchers", color: "text-teal-500", bg: "bg-teal-500/10", solidBg: "bg-teal-500" },
+    { name: "Money Receipts", value: moneyReceipts, icon: Coins, href: "/user/money-receipts", color: "text-yellow-500", bg: "bg-yellow-500/10", solidBg: "bg-yellow-500" },
+    { name: "Vehicle Conditions", value: vehicleConditions, icon: Car, href: "/user/vehicle-conditions", color: "text-cyan-500", bg: "bg-cyan-500/10", solidBg: "bg-cyan-500" },
+    { name: "NOC Forms", value: nocForms, icon: ShieldCheck, href: "/user/noc-forms", color: "text-rose-500", bg: "bg-rose-500/10", solidBg: "bg-rose-500" },
   ];
 
   const allRecentDocs = [
@@ -136,13 +136,18 @@ export default async function DashboardPage() {
         {stats.map((stat) => {
           const Icon = stat.icon;
           return (
-            <div key={stat.name} className="p-6 bg-card rounded-xl border border-border shadow-sm flex items-center gap-4">
-              <div className={`w-12 h-12 rounded-full flex items-center justify-center ${stat.bg}`}>
-                <Icon className={`w-6 h-6 ${stat.color}`} />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">{stat.name}</p>
-                <p className="text-2xl font-bold text-foreground">{stat.value}</p>
+            <div key={stat.name} className="relative overflow-hidden p-6 bg-card rounded-2xl border border-border shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group cursor-pointer">
+              {/* Subtle background glow */}
+              <div className={`absolute -right-8 -top-8 w-32 h-32 opacity-20 rounded-full blur-3xl transition-opacity duration-300 group-hover:opacity-40 ${stat.solidBg}`} />
+              
+              <div className="relative z-10 flex items-center gap-5">
+                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-inner border border-white/5 ${stat.bg} group-hover:scale-110 transition-transform duration-300`}>
+                  <Icon className={`w-7 h-7 ${stat.color}`} />
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-muted-foreground tracking-wider uppercase mb-1">{stat.name}</p>
+                  <p className="text-3xl font-black text-foreground">{stat.value}</p>
+                </div>
               </div>
             </div>
           );
@@ -151,18 +156,24 @@ export default async function DashboardPage() {
 
 
 
-      <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
-        <h2 className="text-lg font-bold text-foreground mb-4">Documents Overview</h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+      <div className="bg-card/50 backdrop-blur-md rounded-2xl border border-border/50 p-7 shadow-lg">
+        <h2 className="text-xl font-extrabold text-foreground mb-6 flex items-center gap-2">
+          <div className="w-2 h-6 bg-primary rounded-full"></div>
+          Documents Overview
+        </h2>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5">
           {documentStats.map((doc) => {
             const Icon = doc.icon;
             return (
-              <Link key={doc.name} href={doc.href} className="p-4 border border-border rounded-lg flex flex-col items-center justify-center text-center hover:border-primary hover:bg-primary/5 transition-colors group">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center mb-3 ${doc.bg} group-hover:scale-110 transition-transform`}>
-                  <Icon className={`w-5 h-5 ${doc.color}`} />
+              <Link key={doc.name} href={doc.href} className="relative p-5 bg-card border border-border rounded-2xl flex flex-col items-center justify-center text-center hover:border-transparent transition-all duration-300 group hover:shadow-2xl hover:shadow-black/5 overflow-hidden">
+                {/* Hover background fill */}
+                <div className={`absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-300 ${doc.solidBg}`} />
+                
+                <div className={`relative z-10 w-12 h-12 rounded-2xl flex items-center justify-center mb-4 shadow-sm border border-border/50 ${doc.bg} group-hover:scale-110 group-hover:-translate-y-1 transition-all duration-300`}>
+                  <Icon className={`w-6 h-6 ${doc.color}`} />
                 </div>
-                <p className="text-2xl font-bold text-foreground mb-1">{doc.value}</p>
-                <p className="text-xs font-medium text-muted-foreground">{doc.name}</p>
+                <p className="relative z-10 text-3xl font-bold text-foreground mb-1 group-hover:scale-105 transition-transform duration-300">{doc.value}</p>
+                <p className="relative z-10 text-xs font-semibold text-muted-foreground group-hover:text-foreground transition-colors duration-300">{doc.name}</p>
               </Link>
             );
           })}

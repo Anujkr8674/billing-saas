@@ -102,7 +102,7 @@ export default function Home() {
 
             <Reveal direction="left" delay={0.2}>
               <div className="relative mt-12 lg:mt-0 animate-float-slow">
-                <img src="https://packersbilling.in/images/hero_image2.webp" alt="Dashboard Preview" className="w-full h-auto relative z-10 scale-110 origin-right drop-shadow-2xl" />
+                <img src="/images/hero2.png" alt="Dashboard Preview" className="w-full h-auto object-contain rounded-xl border border-gray-200/60 bg-white relative z-10 shadow-2xl" />
               </div>
             </Reveal>
           </div>
@@ -212,8 +212,8 @@ export default function Home() {
 
       {/* --- WHY CHOOSE US / MISSION SECTION --- */}
       <section id="about" className="py-24 px-6 bg-white overflow-hidden">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+        <div className="max-w-5xl mx-auto lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
             <div className="lg:col-span-7">
               <Reveal direction="right">
                 <div>

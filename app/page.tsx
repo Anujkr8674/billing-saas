@@ -79,7 +79,7 @@ export default function Home() {
 
                 <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
                   <Link href="/signup" className="px-8 py-4 bg-white border-2 border-[#6142e5] text-[#6142e5] font-bold rounded-full hover:bg-slate-50 transition-all shadow-md flex items-center justify-center gap-2">
-                    Free Registration <ArrowRight className="w-5 h-5" />
+                    Start Now <ArrowRight className="w-5 h-5" />
                   </Link>
                   <a href="https://wa.me/8674823125" target="_blank" rel="noopener noreferrer" className="px-8 py-4 bg-[#25D366] text-white font-bold rounded-full hover:bg-[#25D366]/90 transition-all shadow-md flex items-center justify-center gap-2">
                     <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
@@ -493,7 +493,7 @@ export default function Home() {
             </p>
             <div className="mt-8 flex justify-end">
               <Link href="/signup" className="px-6 py-3 bg-primary text-white font-bold rounded-xl hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20">
-                Try it now
+                Start Now
               </Link>
             </div>
           </div>

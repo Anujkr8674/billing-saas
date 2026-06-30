@@ -98,7 +98,7 @@ export default function Navbar() {
       </nav>
       <div className="flex items-center gap-4">
         <Link href="/signup" className="hidden sm:flex px-6 py-2.5 bg-white text-[#6142e5] font-bold rounded-full hover:bg-slate-50 transition-all shadow-md items-center gap-2">
-          Free Registration <span className="rotate-45 text-lg leading-none">↑</span>
+          Start Now <span className="rotate-45 text-lg leading-none">↑</span>
         </Link>
         <Link href="/login" className="px-6 py-2.5 bg-[#5b21b6] text-white font-bold rounded-full hover:bg-[#5b21b6]/90 transition-all shadow-md items-center gap-2 flex">
           Login <span className="rotate-45 text-lg leading-none">↑</span>
@@ -142,7 +142,7 @@ export default function Navbar() {
             onClick={() => setIsMobileMenuOpen(false)}
             className="sm:hidden px-4 py-4 text-[#6142e5] font-bold hover:bg-primary/5 rounded-lg flex items-center justify-between transition-colors text-lg"
           >
-            Free Registration <span>↑</span>
+            Start Now <span>↑</span>
           </Link>
         </div>
       </div>

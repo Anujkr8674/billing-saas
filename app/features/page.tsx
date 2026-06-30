@@ -197,7 +197,7 @@ export default function FeaturesPage() {
               href="/signup"
               className="w-full flex justify-center items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white py-3 rounded-xl font-semibold transition-colors"
             >
-              Try it now <Zap className="w-4 h-4" />
+              Start Now <Zap className="w-4 h-4" />
             </Link>
           </div>
         </div>

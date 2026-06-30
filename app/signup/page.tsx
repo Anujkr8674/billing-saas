@@ -97,12 +97,11 @@ export default function Signup() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6">
-      <Link href="/" className="flex items-center justify-center mb-8">
-        <img src={siteAssets.logo} alt="NextGen Billing Logo" className="h-12" />
-      </Link>
-      
       <div className="w-full max-w-md bg-card rounded-2xl border border-border shadow-lg p-8">
-        <div className="text-center mb-8">
+        <div className="text-center mb-8 flex flex-col items-center">
+          <Link href="/" className="mb-6">
+            <img src={siteAssets.logo} alt="NextGen Billing Logo" className="h-12" />
+          </Link>
           <h1 className="text-2xl font-bold text-foreground">
             {step === 1 ? "Create an Account" : step === 2 ? "Verify Email" : "Set Password"}
           </h1>
